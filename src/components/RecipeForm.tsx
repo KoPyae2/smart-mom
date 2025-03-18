@@ -78,7 +78,7 @@ export default function RecipeForm({ onSubmit, isLoading }: RecipeFormProps) {
   return (
     <Card className="overflow-hidden relative border-amber-200 backdrop-blur-sm bg-amber-50/30">
       {isLoading && (
-        <div className="flex absolute inset-0 z-10 justify-center items-center bg-white bg-opacity-75">
+        <div className="flex absolute inset-0 z-10 flex-col justify-center items-center bg-white bg-opacity-75">
           <Loader2 className="w-12 h-12 text-amber-600 animate-spin" />
           <p className="mt-2 text-amber-800">Cooking up your recipe...</p>
           <p className="mt-2 text-amber-700 font-myanmar">သင့်မြန်မာဟင်းလျာကို ပြင်ဆင်နေပါသည်...</p>
