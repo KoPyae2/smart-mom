@@ -98,7 +98,6 @@ const DishDisplay = ({ dish, type }: { dish: Dish; type: 'main' | 'side' }) => {
                 <span className="inline-block flex justify-center items-center mr-2 w-8 h-8 bg-amber-300 rounded-full">🖼️</span>
                 Recipe Image
               </h4>
-              
               <div className="overflow-hidden relative rounded-lg border border-amber-200">
                 {generatedImage ? (
                   <img 
