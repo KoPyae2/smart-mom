@@ -72,7 +72,7 @@ function App() {
           </p>
         </header>
 
-        <div className="mx-auto max-w-3xl backdrop-blur-sm">
+        <div className="mx-auto max-w-6xl backdrop-blur-sm">
           {!recipeOptions && <RecipeForm onSubmit={handleGenerateRecipe} isLoading={loading} />}
                     
           {error && (

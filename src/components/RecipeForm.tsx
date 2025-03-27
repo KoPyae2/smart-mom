@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { X, Loader2, Plus, Utensils, Clock, Users, ChefHat } from "lucide-react";
+import { toast } from "sonner"
 
 interface RecipeFormInputs {
   ingredients: string;
@@ -69,7 +70,9 @@ export default function RecipeForm({ onSubmit, isLoading }: RecipeFormProps) {
 
   const handleFormSubmit = (data: RecipeFormInputs) => {
     if (ingredientList.length === 0) {
-      alert('Please add at least one ingredient');
+      console.log("hehe");
+      
+      toast.error("Please add at least one ingredient to continue")
       return;
     }
 
@@ -160,7 +163,7 @@ export default function RecipeForm({ onSubmit, isLoading }: RecipeFormProps) {
             </div>
 
             {/* Settings Grid */}
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               {/* Meal Type */}
               <div className="p-4 bg-amber-50 rounded-lg border border-amber-100 shadow-sm">
                 <div className="flex gap-2 items-center mb-3">

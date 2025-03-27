@@ -23,7 +23,7 @@ interface DishCardProps {
 const DishCard = ({ dish, index, isSelected, onSelect, imageUrl, isLoading }: DishCardProps) => {
   return (
     <Card 
-      className={`overflow-hidden border-amber-200 backdrop-blur-sm transition-all duration-300 transform hover:scale-102 cursor-pointer ${
+      className={`overflow-hidden border-amber-200 backdrop-blur-sm transition-all duration-300 transform hover:scale-102 cursor-pointer gap-0 ${
         isSelected ? 'ring-2 ring-amber-500' : ''}`}
       onClick={() => onSelect(dish, index)}
     >
@@ -166,7 +166,7 @@ export default function RecipeOptions({ recipe, onSelectRecipe }: RecipeOptionsP
         <p className="text-lg text-amber-700 font-myanmar">သင့်စိတ်ကြိုက် ဟင်းလျာကို ရွေးချယ်ပါ</p>
       </div>
 
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         {recipe.meal_plan.options.map((dish, index) => (
           <DishCard
             key={index}
