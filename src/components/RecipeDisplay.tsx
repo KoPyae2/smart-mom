@@ -9,7 +9,11 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AlertCircle, Loader2 } from "lucide-react";
 
 interface RecipeDisplayProps {
-  recipe: RecipeResponse | null;
+  recipe: {
+    meal_plan: {
+      main_dish: Dish;
+    };
+  };
   onRegenerateRecipe: (newRecipe: RecipeResponse) => void;
 }
 
@@ -249,6 +253,7 @@ export default function RecipeDisplay({ recipe, onRegenerateRecipe }: RecipeDisp
         'main dish', // Default to main dish
         '45 minutes', // Default duration
         4, // Default serving size
+        'curry', // Default cooking method
         true // This is a regeneration
       );
 

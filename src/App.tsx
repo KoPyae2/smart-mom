@@ -1,13 +1,15 @@
 import { useState } from 'react'
 import RecipeForm from './components/RecipeForm'
 import RecipeDisplay from './components/RecipeDisplay'
-import { generateRecipe, RecipeResponse } from './services/gemini'
+import RecipeOptions from './components/RecipeOptions'
+import { generateRecipe, RecipeResponse, Dish } from './services/gemini'
 import { Button } from "@/components/ui/button"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { AlertCircle } from "lucide-react"
 
 function App() {
-  const [recipe, setRecipe] = useState<RecipeResponse | null>(null)
+  const [recipeOptions, setRecipeOptions] = useState<RecipeResponse | null>(null)
+  const [selectedRecipe, setSelectedRecipe] = useState<Dish | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -16,32 +18,38 @@ function App() {
     mealType: string
     duration: string
     peopleCount: number
+    cookingMethod: string
   }) => {
     setLoading(true)
     setError(null)
+    setSelectedRecipe(null)
     
     try {
       const recipeData = await generateRecipe(
         data.ingredients,
         data.mealType,
         data.duration,
-        data.peopleCount
+        data.peopleCount,
+        data.cookingMethod
       )
       
-      setRecipe(recipeData)
+      setRecipeOptions(recipeData)
     } catch (err) {
       console.error('Error generating recipe:', err)
-      setError('Failed to generate recipe. Please try again.')
+      setError('Failed to generate recipe. Please try again with using vpn.')
     } finally {
       setLoading(false)
     }
   }
 
+  const handleSelectRecipe = (dish: Dish) => {
+    setSelectedRecipe(dish)
+  }
+
   const handleRegenerateRecipe = (newRecipe: RecipeResponse) => {
-    setRecipe(newRecipe);
-    // Scroll to top so user can see the new recipe
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
+    setRecipeOptions(newRecipe)
+    setSelectedRecipe(null)
+  }
 
   return (
     <div className="min-h-screen bg-fixed bg-gradient-to-br from-amber-50 to-orange-100">
@@ -65,7 +73,7 @@ function App() {
         </header>
 
         <div className="mx-auto max-w-3xl backdrop-blur-sm">
-          {!recipe && <RecipeForm onSubmit={handleGenerateRecipe} isLoading={loading} />}
+          {!recipeOptions && <RecipeForm onSubmit={handleGenerateRecipe} isLoading={loading} />}
                     
           {error && (
             <Alert variant="destructive" className="mt-6">
@@ -74,19 +82,37 @@ function App() {
             </Alert>
           )}
           
-          {!loading && recipe && (
+          {!loading && recipeOptions && !selectedRecipe && (
+            <>
+              <RecipeOptions 
+                recipe={recipeOptions} 
+                onSelectRecipe={handleSelectRecipe}
+              />
+              <div className="mt-8 text-center">
+                <Button
+                  onClick={() => setRecipeOptions(null)}
+                  variant="outline"
+                  className="text-amber-700 border-amber-300 hover:text-amber-900 hover:bg-amber-100 hover:border-amber-400"
+                >
+                  ← Generate different options
+                </Button>
+              </div>
+            </>
+          )}
+
+          {selectedRecipe && (
             <>
               <RecipeDisplay 
-                recipe={recipe} 
+                recipe={{ meal_plan: { main_dish: selectedRecipe } }} 
                 onRegenerateRecipe={handleRegenerateRecipe} 
               />
               <div className="mt-8 text-center">
                 <Button
-                  onClick={() => setRecipe(null)}
+                  onClick={() => setSelectedRecipe(null)}
                   variant="outline"
                   className="text-amber-700 border-amber-300 hover:text-amber-900 hover:bg-amber-100 hover:border-amber-400"
                 >
-                  ← Generate a different recipe
+                  ← Choose a different recipe
                 </Button>
               </div>
             </>

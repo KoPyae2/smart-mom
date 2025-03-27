@@ -1,0 +1,46 @@
+# Cursor Rules for Myanmar Recipe Generator
+
+## Project Intelligence
+
+### Critical Implementation Paths
+1. Recipe Generation
+   - Use Gemini API for recipe generation
+   - Handle API responses and errors
+   - Validate recipe data
+
+2. Image Generation
+   - Use Cloudflare worker for image generation
+   - Handle blob URLs correctly
+   - Implement loading states
+
+3. UI Components
+   - Use Shadcn components consistently
+   - Implement responsive design
+   - Handle animations smoothly
+
+### User Preferences
+- Prefer English as default language
+- Show nutrition information prominently
+- Display images automatically
+- Provide print functionality
+
+### Project-Specific Patterns
+- Use Tailwind for styling
+- Implement form validation
+- Handle loading states
+- Manage error states
+- Use responsive design
+
+### Known Challenges
+- Image loading optimization
+- Multiple API calls
+- Performance optimization
+- Mobile responsiveness
+- Browser compatibility
+
+### Tool Usage Patterns
+- Use React hooks for state
+- Implement form handling
+- Handle API calls
+- Manage image generation
+- Handle animations 

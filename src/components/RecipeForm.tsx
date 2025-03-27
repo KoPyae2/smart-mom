@@ -6,13 +6,14 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel } fr
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { X, Loader2, Plus, Utensils, Clock, Users } from "lucide-react";
+import { X, Loader2, Plus, Utensils, Clock, Users, ChefHat } from "lucide-react";
 
 interface RecipeFormInputs {
   ingredients: string;
   mealType: 'breakfast' | 'lunch' | 'dinner' | 'snack';
   duration: string;
   peopleCount: number;
+  cookingMethod: string;
 }
 
 interface RecipeFormProps {
@@ -21,6 +22,7 @@ interface RecipeFormProps {
     mealType: string;
     duration: string;
     peopleCount: number;
+    cookingMethod: string;
   }) => void;
   isLoading: boolean;
 }
@@ -33,6 +35,17 @@ const MEAL_TYPES = [
 ];
 
 const DURATIONS = ['15 minutes', '30 minutes', '45 minutes', '1 hour', '1.5 hours', '2 hours'];
+
+const COOKING_METHODS = [
+  { value: 'fry', english: 'Fry', myanmar: 'ကြော်' },
+  { value: 'boil', english: 'Boil', myanmar: 'ပြုတ်' },
+  { value: 'steam', english: 'Steam', myanmar: 'ပေါင်း' },
+  { value: 'grill', english: 'Grill', myanmar: 'ကင်' },
+  { value: 'stir-fry', english: 'Stir Fry', myanmar: 'ကြော်' },
+  { value: 'soup', english: 'Soup', myanmar: 'ဟင်းရည်' },
+  { value: 'salad', english: 'Salad', myanmar: 'သုပ်' },
+  { value: 'curry', english: 'Curry', myanmar: 'ဟင်း' }
+];
 
 export default function RecipeForm({ onSubmit, isLoading }: RecipeFormProps) {
   const [ingredientInput, setIngredientInput] = useState('');
@@ -65,6 +78,7 @@ export default function RecipeForm({ onSubmit, isLoading }: RecipeFormProps) {
       mealType: data.mealType,
       duration: data.duration,
       peopleCount: data.peopleCount || 2,
+      cookingMethod: data.cookingMethod,
     });
   };
 
@@ -146,7 +160,7 @@ export default function RecipeForm({ onSubmit, isLoading }: RecipeFormProps) {
             </div>
 
             {/* Settings Grid */}
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
               {/* Meal Type */}
               <div className="p-4 bg-amber-50 rounded-lg border border-amber-100 shadow-sm">
                 <div className="flex gap-2 items-center mb-3">
@@ -242,6 +256,40 @@ export default function RecipeForm({ onSubmit, isLoading }: RecipeFormProps) {
                   )}
                 />
               </div>
+
+              {/* Cooking Method */}
+              <div className="p-4 bg-amber-50 rounded-lg border border-amber-100 shadow-sm">
+                <div className="flex gap-2 items-center mb-3">
+                  <ChefHat className="w-4 h-4 text-amber-600" />
+                  <FormLabel className="text-amber-900">Cooking Method</FormLabel>
+                </div>
+                <FormDescription className="mb-3 text-sm text-amber-700 font-myanmar">ချက်ပြုတ်နည်း</FormDescription>
+                <FormField
+                  control={form.control}
+                  name="cookingMethod"
+                  render={({ field }) => (
+                    <FormItem>
+                      <Select 
+                        onValueChange={field.onChange} 
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger className="border-amber-200 focus:ring-amber-400">
+                            <SelectValue placeholder="Select cooking method" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {COOKING_METHODS.map((method) => (
+                            <SelectItem key={method.value} value={method.value}>
+                              {method.english} ({method.myanmar})
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </FormItem>
+                  )}
+                />
+              </div>
             </div>
           </CardContent>
           
@@ -258,7 +306,7 @@ export default function RecipeForm({ onSubmit, isLoading }: RecipeFormProps) {
                 </span>
               ) : (
                 <span className="flex justify-center items-center text-lg">
-                  Generate Myanmar Recipe
+                  Generate Recipe
                   <span className="ml-2">✨</span>
                 </span>
               )}

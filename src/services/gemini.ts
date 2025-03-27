@@ -34,7 +34,9 @@ export interface MealPlan {
 }
 
 export interface RecipeResponse {
-  meal_plan: MealPlan;
+  meal_plan: {
+    options: Dish[];
+  };
 }
 
 const model = genAI.getGenerativeModel({
@@ -54,49 +56,54 @@ const generateSystemPrompt = (
   mealType: string,
   duration: string,
   peopleCount: number,
+  cookingMethod: string,
   isRegeneration: boolean = false
 ) => {
   const basePrompt = `
-    You are a professional chef specializing in Myanmar cuisine. Create a recipe based on these ingredients: ${ingredients.join(
+    You are a professional chef specializing in Myanmar cuisine. Create 3 different recipe options based on these ingredients: ${ingredients.join(
       ", "
     )}.
-    This is for ${mealType}, should take about ${duration} to prepare, and serves ${peopleCount} people.
+    Each recipe should be for ${mealType}, take about ${duration} to prepare, serve ${peopleCount} people, and use the ${cookingMethod} cooking method.
     
-    Make sure the recipe reflects authentic Myanmar culinary traditions and flavors.
-    ${isRegeneration ? "Create an improved version of the recipe with clear, detailed steps. Focus on making the most delicious dish possible with the available ingredients." : ""}
+    Make sure each recipe reflects authentic Myanmar culinary traditions and flavors, and specifically uses the ${cookingMethod} cooking method.
+    ${isRegeneration ? "Create improved versions of the recipes with clear, detailed steps. Focus on making the most delicious dishes possible with the available ingredients." : ""}
     
-    VERY IMPORTANT: Focus ONLY on creating one main dish, not a side dish. For each ingredient and in the dish name, provide both English and Myanmar language names. For the dish name, include the Myanmar name in Myanmar script in parentheses. For each ingredient, include the Myanmar name in Myanmar script in parentheses after the English name. Also provide the cooking steps in both English and Myanmar languages.
+    VERY IMPORTANT: Create 3 distinct recipe options, each with its own unique combination of ingredients and flavors. For each ingredient and in the dish name, provide both English and Myanmar language names. For the dish name, include the Myanmar name in Myanmar script in parentheses. For each ingredient, include the Myanmar name in Myanmar script in parentheses after the English name. Also provide the cooking steps in both English and Myanmar languages.
     
     Provide the response in the following JSON format ONLY. DO NOT wrap the JSON in markdown code blocks (do not use triple backticks). DO NOT include any text before or after the JSON:
     
     {
       "meal_plan": {
-        "main_dish": {
-          "name": "English Name (မြန်မာအမည်)",
-          "ingredients": [
-            {"name": "English ingredient name (မြန်မာအမည်)", "qty": "amount"},
-            {"name": "English ingredient name (မြန်မာအမည်)", "qty": "amount"}
-          ],
-          "steps": [
-            {
-              "english": "English instruction for step 1",
-              "myanmar": "မြန်မာဘာသာဖြင့် အဆင့် ၁ ညွှန်ကြားချက်"
+        "options": [
+          {
+            "name": "English Name (မြန်မာအမည်)",
+            "ingredients": [
+              {"name": "English ingredient name (မြန်မာအမည်)", "qty": "amount"},
+              {"name": "English ingredient name (မြန်မာအမည်)", "qty": "amount"}
+            ],
+            "steps": [
+              {
+                "english": "English instruction for step 1",
+                "myanmar": "မြန်မာဘာသာဖြင့် အဆင့် ၁ ညွှန်ကြားချက်"
+              },
+              {
+                "english": "English instruction for step 2",
+                "myanmar": "မြန်မာဘာသာဖြင့် အဆင့် ၂ ညွှန်ကြားချက်"
+              }
+            ],
+            "nutrition": {
+              "calories": number,
+              "protein": "amount",
+              "carbs": "amount",
+              "fat": "amount",
+              "fiber": "amount",
+              "vitamins": "key vitamins and minerals"
             },
-            {
-              "english": "English instruction for step 2",
-              "myanmar": "မြန်မာဘာသာဖြင့် အဆင့် ၂ ညွှန်ကြားချက်"
-            }
-          ],
-          "nutrition": {
-            "calories": number,
-            "protein": "amount",
-            "carbs": "amount",
-            "fat": "amount",
-            "fiber": "amount",
-            "vitamins": "key vitamins and minerals"
+            "imagePrompt": "A detailed text prompt describing the finished dish that could be used to generate an AI image"
           },
-          "imagePrompt": "A detailed text prompt describing the finished dish that could be used to generate an AI image"
-        }
+          // ... second recipe option
+          // ... third recipe option
+        ]
       }
     }
   `;
@@ -109,6 +116,7 @@ export const generateRecipe = async (
   mealType: string,
   duration: string,
   peopleCount: number,
+  cookingMethod: string,
   isRegeneration: boolean = false
 ): Promise<RecipeResponse> => {
   try {
@@ -117,7 +125,7 @@ export const generateRecipe = async (
       history: [],
     });
     
-    const prompt = generateSystemPrompt(ingredients, mealType, duration, peopleCount, isRegeneration);
+    const prompt = generateSystemPrompt(ingredients, mealType, duration, peopleCount, cookingMethod, isRegeneration);
     
     const result = await chatSession.sendMessage(prompt);
     const text = result.response.text();
