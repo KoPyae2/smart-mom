@@ -13,7 +13,7 @@ This project is a web application that generates authentic Myanmar recipes based
 
 1. **Clone the Repository**:
    ```bash
-   git clone https://github.com/yourusername/myanmar-recipe-generator.git
+   git clone https://github.com/KoPyae2/smart-mom.git
    cd myanmar-recipe-generator
    ```
 
